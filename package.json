@@ -1,0 +1,11 @@
+{
+  "name": "api-my-todo-rest",
+  "version": "1.0.0",
+  "description": "api feito em node do projeto My ToDo",
+  "main": "index.js",
+  "author": "Filipe Camera",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  }
+}
