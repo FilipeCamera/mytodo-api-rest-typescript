@@ -6,6 +6,12 @@
   "author": "Filipe Camera",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^18.7.15",
     "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "pg": "^8.8.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.9"
   }
 }

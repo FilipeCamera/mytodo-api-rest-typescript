@@ -1,27 +1,32 @@
-export default class User {
-  private readonly id: string;
-  private email: string;
-  private password: string;
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from "typeorm";
 
-  constructor() {}
+import { Role } from "./Role";
 
-  get getId() {
-    return this.id;
-  }
+@Entity({ name: "users" })
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-  get getEmail() {
-    return this.email;
-  }
+  @Column({ nullable: false, unique: true })
+  email: string;
 
-  set setEmail(email: string) {
-    this.email = email;
-  }
+  @Column({ nullable: false })
+  password: string;
 
-  get getPassword() {
-    return this.password;
-  }
+  @ManyToOne(() => Role, (role) => role.users)
+  role: Role;
 
-  set setPassword(password: string) {
-    this.password = password;
-  }
+  @CreateDateColumn({ update: false, nullable: false })
+  createdAt: Date;
+
+  @UpdateDateColumn({ nullable: false, update: true })
+  updatedAt: Date;
 }
