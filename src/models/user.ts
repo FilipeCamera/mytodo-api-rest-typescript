@@ -6,9 +6,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 
 import { Role } from "./Role";
+import { Todo } from "./Todo";
 
 @Entity({ name: "users" })
 export class User extends BaseEntity {
@@ -23,6 +25,9 @@ export class User extends BaseEntity {
 
   @ManyToOne(() => Role, (role) => role.users)
   role: Role;
+
+  @OneToMany(() => Todo, (todo) => todo.user)
+  todos: Todo[];
 
   @CreateDateColumn({ update: false, nullable: false })
   createdAt: Date;
