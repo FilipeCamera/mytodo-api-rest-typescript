@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+
 import { User } from "./User";
 
 @Entity({ name: "roles" })
