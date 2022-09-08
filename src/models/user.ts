@@ -13,7 +13,7 @@ import { Role } from "./Role";
 import { Todo } from "./Todo";
 
 @Entity({ name: "users" })
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -23,7 +23,11 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   password: string;
 
-  @ManyToOne(() => Role, (role) => role.users)
+  @ManyToOne(() => Role, (role) => role.users, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+    nullable: false,
+  })
   role: Role;
 
   @OneToMany(() => Todo, (todo) => todo.user)

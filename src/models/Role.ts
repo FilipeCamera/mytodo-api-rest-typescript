@@ -10,7 +10,7 @@ import {
 import { User } from "./User";
 
 @Entity({ name: "roles" })
-export class Role extends BaseEntity {
+export class Role {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

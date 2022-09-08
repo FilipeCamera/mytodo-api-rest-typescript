@@ -1,13 +1,28 @@
 import "reflect-metadata";
-import { Application, application } from "express";
+import express, { Application } from "express";
 import routes from "./routes";
+import MyToDoDataSource from "./database";
 
 class App {
   private readonly app: Application;
 
   constructor() {
-    this.app = application;
+    this.app = express();
+    this.loadDatabase();
+    this.middlewares();
     this.app.use(routes);
+  }
+
+  private async loadDatabase() {
+    try {
+      await MyToDoDataSource.initialize();
+    } catch (e) {
+      return console.log(e);
+    }
+  }
+
+  private middlewares() {
+    this.app.use(express.json());
   }
 
   listen(port: number) {

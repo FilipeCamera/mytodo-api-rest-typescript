@@ -11,11 +11,15 @@ import {
 import { User } from "./User";
 
 @Entity({ name: "todos" })
-export class Todo extends BaseEntity {
+export class Todo {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User, (user) => user.todos)
+  @ManyToOne(() => User, (user) => user.todos, {
+    nullable: false,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   user: User;
 
   @Column({ nullable: false })
