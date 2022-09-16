@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,7 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { User } from "./User";
+import { User } from "./user";
 
 @Entity({ name: "todos" })
 export class Todo {

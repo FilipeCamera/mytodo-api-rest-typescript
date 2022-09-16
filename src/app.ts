@@ -17,7 +17,7 @@ class App {
     try {
       await MyToDoDataSource.initialize();
     } catch (e) {
-      return console.log(e);
+      return console.log(e.message);
     }
   }
 

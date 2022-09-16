@@ -16,7 +16,7 @@ const MyToDoDataSource = new DataSource({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   entities: [User, Role, Todo],
-  logging: true,
+  //logging: true,
   synchronize: true,
 });
 

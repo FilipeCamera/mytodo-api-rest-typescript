@@ -2,15 +2,14 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
 } from "typeorm";
 
-import { Role } from "./Role";
-import { Todo } from "./Todo";
+import { Role } from "./role";
+import { Todo } from "./todo";
 
 @Entity({ name: "users" })
 export class User {

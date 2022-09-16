@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-import { User } from "./User";
+import { User } from "./user";
 
 @Entity({ name: "roles" })
 export class Role {
