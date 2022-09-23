@@ -52,6 +52,44 @@ class UserController {
 
     return res.status(StatusCode.CREATED).json({ message: "created" });
   }
+
+  async read(req: Request, res: Response) {
+    const { id } = req.params;
+
+    let user: User | User[] = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      user = await this.userRepository.find();
+
+      return res.status(StatusCode.OK).json({ users: user });
+    }
+
+    return res.status(StatusCode.OK).json({ user: user });
+  }
+
+  async update(req: Request, res: Response) {
+    const { id } = req.params;
+    const { email, password } = req.body;
+
+    const userUpdate = await this.userRepository.findOne({ where: { id } });
+
+    if (!userUpdate) {
+      return res.status(StatusCode.BAD_REQUEST).json("User not found");
+    }
+
+    userUpdate.email = email;
+    userUpdate.password = password;
+
+    await this.userRepository.save(userUpdate);
+
+    return res.status(StatusCode.OK).json({ user: userUpdate });
+  }
+
+  async delete(req: Request, res: Response) {
+    return res.status(StatusCode.OK).json({ message: "Deleted user" });
+  }
 }
 
 export default UserController;
