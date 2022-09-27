@@ -11,7 +11,7 @@ import {
 import { Role } from "./role";
 import { Todo } from "./todo";
 
-@Entity({ name: "users" })
+@Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;

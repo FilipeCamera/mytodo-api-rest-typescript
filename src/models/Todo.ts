@@ -9,7 +9,7 @@ import {
 
 import { User } from "./user";
 
-@Entity({ name: "todos" })
+@Entity()
 export class Todo {
   @PrimaryGeneratedColumn("uuid")
   id: string;

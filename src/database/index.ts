@@ -2,9 +2,9 @@ import { DataSource } from "typeorm";
 
 import "dotenv/config";
 
-import { User } from "../models/User";
-import { Role } from "../models/Role";
-import { Todo } from "../models/Todo";
+import { User } from "../models/user";
+import { Role } from "../models/role";
+import { Todo } from "../models/todo";
 
 const PORT = parseInt(process.env.DB_PORT) || 5432;
 

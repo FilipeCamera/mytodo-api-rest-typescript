@@ -8,7 +8,7 @@ import {
 
 import { User } from "./user";
 
-@Entity({ name: "roles" })
+@Entity()
 export class Role {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -16,7 +16,7 @@ export class Role {
   @Column({ unique: true, nullable: false })
   name: string;
 
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany(() => User, (user) => user.role, { lazy: false })
   users: User[];
 
   @CreateDateColumn({ update: false, nullable: false })

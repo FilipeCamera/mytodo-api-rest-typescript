@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { StatusCode } from "../enums/status-code";
 import { validationResult } from "express-validator";
 import { User } from "../models/user";
-import { Repository } from "typeorm";
-import { Role } from "../models/role";
+import UserRepository from "../repositories/user-repository";
+import RoleRepository from "../repositories/role-repository";
 
 class UserController {
   constructor(
-    private readonly userRepository: Repository<User>,
-    private readonly roleRepository: Repository<Role>
+    private readonly userRepository: UserRepository,
+    private readonly roleRepository: RoleRepository
   ) {}
   async create(req: Request, res: Response) {
     const errors = validationResult(req);
