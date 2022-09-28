@@ -2,11 +2,11 @@ import { DataSource } from "typeorm";
 
 import "dotenv/config";
 
-import { User } from "../models/user";
-import { Role } from "../models/role";
-import { Todo } from "../models/todo";
+import User from "../models/user";
+import Role from "../models/role";
+import Todo from "../models/todo";
 
-const PORT = parseInt(process.env.DB_PORT) || 5432;
+const PORT = parseInt(process.env.DB_PORT) || 49153;
 
 const MyToDoDataSource = new DataSource({
   type: "postgres",

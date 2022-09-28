@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-import { User } from "./user";
+import User from "./user";
 
-@Entity()
-export class Role {
+@Entity("roles")
+export default class Role {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

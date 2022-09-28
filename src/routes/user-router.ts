@@ -1,10 +1,10 @@
 import express from "express";
 import { body } from "express-validator";
-
 import UserController from "../controllers/user-controller";
+
 import MyToDoDataSource from "../database";
-import { Role } from "../models/role";
-import { User } from "../models/user";
+import Role from "../models/role";
+import User from "../models/user";
 
 const userRoutes = express.Router();
 

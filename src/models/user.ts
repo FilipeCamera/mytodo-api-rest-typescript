@@ -8,11 +8,11 @@ import {
   OneToMany,
 } from "typeorm";
 
-import { Role } from "./role";
-import { Todo } from "./todo";
+import Role from "./role";
+import Todo from "./todo";
 
-@Entity()
-export class User {
+@Entity("users")
+export default class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

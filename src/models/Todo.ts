@@ -7,10 +7,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { User } from "./user";
+import User from "./user";
 
-@Entity()
-export class Todo {
+@Entity("todos")
+export default class Todo {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
