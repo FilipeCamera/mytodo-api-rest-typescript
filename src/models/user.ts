@@ -6,10 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 
 import Role from "./role";
 import Todo from "./todo";
+
+import bcrypt from "bcrypt";
 
 @Entity("users")
 export default class User {
@@ -37,4 +41,10 @@ export default class User {
 
   @UpdateDateColumn({ nullable: false, update: true })
   updatedAt: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  hashPassword() {
+    this.password = bcrypt.hashSync(this.password, 8)
+  }
 }
