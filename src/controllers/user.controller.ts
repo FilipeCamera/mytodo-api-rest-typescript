@@ -3,13 +3,13 @@ import { StatusCode } from '../enums/status-code';
 import { validationResult } from 'express-validator';
 import User from '../models/user';
 //import MyToDoDataSource from '../database';
-import Role from '../models/role';
-import { Repository } from 'typeorm';
+import UserService from '../services/user.service';
+import RoleService from '../services/role.service';
 
 class UserController {
   constructor(
-    private readonly userRepository: Repository<User>,
-    private readonly roleRepository: Repository<Role>
+    private readonly userService: UserService,
+    private readonly roleService: RoleService
   ) {}
 
   async create(req: Request, res: Response) {
@@ -21,17 +21,13 @@ class UserController {
 
     const { email, password } = req.body;
 
-    const existUser = await this.userRepository.findOne({
-      where: { email },
-    });
+    const existUser = await this.userService.findByEmail(email);
 
     if (existUser) {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'User exist' });
     }
 
-    const role = await this.roleRepository.findOne({
-      where: { name: 'USER' },
-    });
+    const role = await this.roleService.findByName('USER');
 
     if (!role) {
       return res
@@ -39,11 +35,7 @@ class UserController {
         .json('Ocorreu um erro! Tente novamente mais tarde.');
     }
 
-    const user = this.userRepository.create({
-      email,
-      password,
-      role,
-    });
+    const user = this.userService.create(email, password, role);
 
     if (!user) {
       return res
@@ -51,7 +43,7 @@ class UserController {
         .json({ error: 'Tivemos um problema ao criar o usuário' });
     }
 
-    await this.userRepository.save(user);
+    await this.userService.save(user);
 
     return res.status(StatusCode.CREATED).json({ user });
   }
@@ -59,12 +51,10 @@ class UserController {
   async read(req: Request, res: Response) {
     const { id } = req.params;
 
-    const user: User = await this.userRepository.findOne({
-      where: { id },
-    });
+    const user: User = await this.userService.findById(id);
 
     if (!user) {
-      const users: User[] = await this.userRepository.find();
+      const users: User[] = await this.userService.findAll();
       //user = await MyToDoDataSource.getRepository(User).find();
 
       return res.status(StatusCode.OK).json({ users: users });
@@ -82,7 +72,7 @@ class UserController {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
     }
 
-    const userUpdate = await this.userRepository.findOne({ where: { id } });
+    const userUpdate = await this.userService.findById(id);
 
     if (!userUpdate) {
       return res.status(StatusCode.BAD_REQUEST).json('User not found');
@@ -97,7 +87,7 @@ class UserController {
     userUpdate.email = email;
     userUpdate.password = password;
 
-    await this.userRepository.save(userUpdate);
+    await this.userService.save(userUpdate);
 
     return res.status(StatusCode.OK).json({ user: userUpdate });
   }
@@ -110,7 +100,7 @@ class UserController {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
     }
 
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userService.findById(id);
 
     if (!user) {
       return res.status(StatusCode.NOT_FOUND).json({ message: 'User not found' });
@@ -120,7 +110,7 @@ class UserController {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'You cannot delete this user' });
     }
 
-    await this.userRepository.remove(user);
+    await this.userService.remove(user);
 
     return res.status(StatusCode.OK).json({ message: 'Deleted user' });
   }

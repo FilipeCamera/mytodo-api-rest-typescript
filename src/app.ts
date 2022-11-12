@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express, { Application } from 'express';
 import routes from './routes';
 import MyToDoDataSource from './database';

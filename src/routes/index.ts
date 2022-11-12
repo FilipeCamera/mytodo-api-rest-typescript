@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import userRoutes from './user.router';
+import authRoutes from './auth.route';
+import userRoutes from './user.route';
 
 const routes = Router();
 
@@ -7,6 +8,6 @@ routes
   .get('/api', (req, res) => {
     return res.send('Bem-vindo a API do MyTodo!');
   })
-  .use('/api', userRoutes);
+  .use('/api', [userRoutes, authRoutes]);
 
 export default routes;
