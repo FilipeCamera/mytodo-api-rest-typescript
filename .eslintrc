@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["@typescript-eslint","prettier"],
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": ["*.ts", "*.d.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
+
+  ],
+  "rules": {
+    "prettier/prettier": ["error", {
+      "endOfLine": "auto"
+    }]
+  }
+}

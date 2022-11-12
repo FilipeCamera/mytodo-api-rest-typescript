@@ -8,16 +8,16 @@ import {
   OneToMany,
   BeforeInsert,
   BeforeUpdate,
-} from "typeorm";
+} from 'typeorm';
 
-import Role from "./role";
-import Todo from "./todo";
+import Role from './role';
+import Todo from './todo';
 
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
-@Entity("users")
+@Entity('users')
 export default class User {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ nullable: false, unique: true })
@@ -27,8 +27,8 @@ export default class User {
   password: string;
 
   @ManyToOne(() => Role, (role) => role.users, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     nullable: false,
   })
   role: Role;
@@ -45,6 +45,6 @@ export default class User {
   @BeforeInsert()
   @BeforeUpdate()
   hashPassword() {
-    this.password = bcrypt.hashSync(this.password, 8)
+    this.password = bcrypt.hashSync(this.password, 8);
   }
 }

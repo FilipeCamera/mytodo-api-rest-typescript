@@ -1,8 +1,8 @@
-import "reflect-metadata";
-import express, { Application } from "express";
-import routes from "./routes";
-import MyToDoDataSource from "./database";
-import cors from "cors";
+import 'reflect-metadata';
+import express, { Application } from 'express';
+import routes from './routes';
+import MyToDoDataSource from './database';
+import cors from 'cors';
 
 class App {
   private readonly app: Application;

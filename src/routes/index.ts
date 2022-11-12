@@ -1,12 +1,12 @@
-import { Router } from "express";
-import userRoutes from "./user.router";
+import { Router } from 'express';
+import userRoutes from './user.router';
 
 const routes = Router();
 
 routes
-  .get("/api", (req, res) => {
-    return res.send("Bem-vindo a API do MyTodo!");
+  .get('/api', (req, res) => {
+    return res.send('Bem-vindo a API do MyTodo!');
   })
-  .use("/api", userRoutes);
+  .use('/api', userRoutes);
 
 export default routes;

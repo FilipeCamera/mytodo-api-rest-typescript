@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { StatusCode } from "../enums/status-code";
-import { validationResult } from "express-validator";
-import User from "../models/user";
-import MyToDoDataSource from "../database";
-import Role from "../models/role";
-import { Repository } from "typeorm";
+import { Request, Response } from 'express';
+import { StatusCode } from '../enums/status-code';
+import { validationResult } from 'express-validator';
+import User from '../models/user';
+//import MyToDoDataSource from '../database';
+import Role from '../models/role';
+import { Repository } from 'typeorm';
 
 class UserController {
   constructor(
@@ -16,9 +16,7 @@ class UserController {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res
-        .status(StatusCode.BAD_REQUEST)
-        .json({ errors: errors.array() });
+      return res.status(StatusCode.BAD_REQUEST).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
@@ -28,17 +26,17 @@ class UserController {
     });
 
     if (existUser) {
-      return res.status(StatusCode.BAD_REQUEST).json({ message: "User exist" });
+      return res.status(StatusCode.BAD_REQUEST).json({ message: 'User exist' });
     }
 
     const role = await this.roleRepository.findOne({
-      where: { name: "USER" },
+      where: { name: 'USER' },
     });
 
     if (!role) {
       return res
         .status(StatusCode.SERVER_ERROR)
-        .json("Ocorreu um erro! Tente novamente mais tarde.");
+        .json('Ocorreu um erro! Tente novamente mais tarde.');
     }
 
     const user = this.userRepository.create({
@@ -50,7 +48,7 @@ class UserController {
     if (!user) {
       return res
         .status(StatusCode.SERVER_ERROR)
-        .json({ error: "Tivemos um problema ao criar o usuário" });
+        .json({ error: 'Tivemos um problema ao criar o usuário' });
     }
 
     await this.userRepository.save(user);
@@ -78,22 +76,24 @@ class UserController {
   async update(req: Request, res: Response) {
     const { id } = req.params;
     const { email, password } = req.body;
-    const {user_id, role} = req.auth;
+    const { user_id, role } = req.auth;
 
-    if(!user_id) {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({message: "Unauthenticated user"})
+    if (!user_id) {
+      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
     }
 
     const userUpdate = await this.userRepository.findOne({ where: { id } });
 
     if (!userUpdate) {
-      return res.status(StatusCode.BAD_REQUEST).json("User not found");
+      return res.status(StatusCode.BAD_REQUEST).json('User not found');
     }
 
-    if(userUpdate.id !== user_id || role !== "ADMIN") {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({message: "You do not have permission to modify this user"})
+    if (userUpdate.id !== user_id || role !== 'ADMIN') {
+      return res
+        .status(StatusCode.NOT_AUTHORIZED)
+        .json({ message: 'You do not have permission to modify this user' });
     }
-    
+
     userUpdate.email = email;
     userUpdate.password = password;
 
@@ -103,26 +103,26 @@ class UserController {
   }
 
   async delete(req: Request, res: Response) {
-    const {id} = req.params;
-    const {user_id, role} = req.auth;
+    const { id } = req.params;
+    const { user_id, role } = req.auth;
 
-    if(!user_id) {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({message: "Unauthenticated user"})
+    if (!user_id) {
+      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
     }
 
-    const user = await this.userRepository.findOne({where: {id}});
+    const user = await this.userRepository.findOne({ where: { id } });
 
-    if(!user) {
-      return res.status(StatusCode.NOT_FOUND).json({message: "User not found"})
+    if (!user) {
+      return res.status(StatusCode.NOT_FOUND).json({ message: 'User not found' });
     }
 
-    if(user.id !== user_id || role !== "ADMIN") {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({message: "You cannot delete this user"})
+    if (user.id !== user_id || role !== 'ADMIN') {
+      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'You cannot delete this user' });
     }
 
     await this.userRepository.remove(user);
-    
-    return res.status(StatusCode.OK).json({ message: "Deleted user" });
+
+    return res.status(StatusCode.OK).json({ message: 'Deleted user' });
   }
 }
 
