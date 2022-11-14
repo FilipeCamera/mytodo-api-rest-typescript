@@ -8,12 +8,14 @@ import {
   OneToMany,
   BeforeInsert,
   BeforeUpdate,
+  OneToOne,
 } from 'typeorm';
 
 import Role from './role';
 import Todo from './todo';
 
 import bcrypt from 'bcrypt';
+import RefreshToken from './refresh-token';
 
 @Entity('users')
 export default class User {

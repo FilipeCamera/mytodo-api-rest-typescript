@@ -66,7 +66,7 @@ class UserController {
   async update(req: Request, res: Response) {
     const { id } = req.params;
     const { email, password } = req.body;
-    const { user_id, role } = req.auth;
+    const { user_id, admin } = req.auth;
 
     if (!user_id) {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
@@ -78,7 +78,7 @@ class UserController {
       return res.status(StatusCode.BAD_REQUEST).json('User not found');
     }
 
-    if (userUpdate.id !== user_id || role !== 'ADMIN') {
+    if (userUpdate.id !== user_id || admin) {
       return res
         .status(StatusCode.NOT_AUTHORIZED)
         .json({ message: 'You do not have permission to modify this user' });
@@ -94,7 +94,7 @@ class UserController {
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    const { user_id, role } = req.auth;
+    const { user_id, admin } = req.auth;
 
     if (!user_id) {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
@@ -106,7 +106,7 @@ class UserController {
       return res.status(StatusCode.NOT_FOUND).json({ message: 'User not found' });
     }
 
-    if (user.id !== user_id || role !== 'ADMIN') {
+    if (user.id !== user_id || admin) {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'You cannot delete this user' });
     }
 

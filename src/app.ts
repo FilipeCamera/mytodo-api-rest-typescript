@@ -4,6 +4,7 @@ import express, { Application } from 'express';
 import routes from './routes';
 import MyToDoDataSource from './database';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 class App {
   private readonly app: Application;
@@ -25,6 +26,7 @@ class App {
 
   private middlewares() {
     this.app.use(express.json());
+    this.app.use(cookieParser());
     this.app.use(cors());
   }
 

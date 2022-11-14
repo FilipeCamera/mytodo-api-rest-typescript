@@ -5,6 +5,7 @@ import 'dotenv/config';
 import User from '../models/user';
 import Role from '../models/role';
 import Todo from '../models/todo';
+import RefreshToken from '../models/refresh-token';
 
 const PORT = parseInt(process.env.DB_PORT) || 49153;
 
@@ -15,7 +16,7 @@ const MyToDoDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: [User, Role, Todo],
+  entities: [User, Role, Todo, RefreshToken],
   //logging: true,
   synchronize: true,
 });

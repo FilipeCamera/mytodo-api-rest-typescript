@@ -2,11 +2,15 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCode } from '../enums/status-code';
 import brcypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import UserService from '../services/user.service';
+import TokenService from '../services/token.service';
+import refreshCookies from '../utils/refresh-cookie';
 
 class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService
+  ) {}
 
   async login(req: Request, res: Response) {
     const errors = validationResult(req);
@@ -29,12 +33,24 @@ class AuthController {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'E-mail or password incorrect' });
     }
 
-    const token = jwt.sign({ role: user.role.name }, process.env.JWT_SECRET_KEY, {
-      subject: user.id,
-      expiresIn: '1h',
-    });
+    try {
+      const { accessToken, refreshToken } = await this.tokenService.generate(user);
+      refreshCookies(res, refreshToken);
+      return res.status(StatusCode.OK).json({ accessToken });
+    } catch (err) {
+      res.status(StatusCode.SERVER_ERROR).json({ error: err.message });
+    }
+  }
 
-    return res.status(StatusCode.OK).json({ token });
+  async refresh(req: Request, res: Response) {
+    const ref = req.cookies['refresh-token'];
+    const refreshTokenDecoded = Buffer.from(ref, 'base64').toString('binary');
+
+    const { accessToken, refreshToken } = await this.tokenService.refresh(refreshTokenDecoded);
+
+    refreshCookies(res, refreshToken);
+
+    return res.status(StatusCode.OK).json(accessToken);
   }
 }
 
