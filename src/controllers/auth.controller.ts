@@ -36,7 +36,7 @@ class AuthController {
     try {
       const { accessToken, refreshToken } = await this.tokenService.generate(user);
       refreshCookies(res, refreshToken);
-      return res.status(StatusCode.OK).json({ accessToken });
+      return res.status(StatusCode.OK).json({ token: accessToken });
     } catch (err) {
       res.status(StatusCode.SERVER_ERROR).json({ error: err.message });
     }
@@ -50,7 +50,7 @@ class AuthController {
 
     refreshCookies(res, refreshToken);
 
-    return res.status(StatusCode.OK).json(accessToken);
+    return res.status(StatusCode.OK).json({ token: accessToken });
   }
 }
 

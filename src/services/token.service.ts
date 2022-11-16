@@ -20,7 +20,7 @@ export default class TokenService {
       {
         audience: 'urn:jwt:type:access',
         issuer: 'urn:system:token-issuer:type:access',
-        expiresIn: '15m',
+        expiresIn: '1m',
       }
     );
     const existRefreshToken = await this.tokenRefreshRepository.findOne({
@@ -30,7 +30,7 @@ export default class TokenService {
     if (existRefreshToken) {
       await this.tokenRefreshRepository.remove(existRefreshToken);
     }
-    const expiresIn = dayjs().add(1, 'hour').unix();
+    const expiresIn = dayjs().add(5, 'minutes').unix();
     const refreshToken = this.tokenRefreshRepository.create({
       user: user,
       expiresIn: expiresIn,
@@ -52,19 +52,16 @@ export default class TokenService {
   }
 
   async refresh(id: string): Promise<Record<string, string>> {
-    const refresh = await this.tokenRefreshRepository.findOne({ where: { id } });
+    const refresh = await this.tokenRefreshRepository.findOne({
+      where: { id },
+      relations: { user: { role: true } },
+    });
 
     if (!refresh) {
       throw new Error('Refresh Token invalid');
     }
 
-    if (refresh.expiresIn < new Date().getTime()) {
-      throw new Error('Refresh Token expired');
-    }
-
-    const user = await this.userRepository.findOne({ where: { id: refresh.user.id } });
-
-    const { accessToken, refreshToken } = await this.generate(user);
+    const { accessToken, refreshToken } = await this.generate(refresh.user);
 
     return { accessToken, refreshToken };
   }

@@ -66,7 +66,7 @@ class UserController {
   async update(req: Request, res: Response) {
     const { id } = req.params;
     const { email, password } = req.body;
-    const { user_id, admin } = req.auth;
+    const { user_id, admin } = req;
 
     if (!user_id) {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
@@ -94,7 +94,7 @@ class UserController {
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    const { user_id, admin } = req.auth;
+    const { user_id, admin } = req;
 
     if (!user_id) {
       return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });

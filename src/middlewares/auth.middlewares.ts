@@ -14,20 +14,23 @@ export async function withRefreshAuthenticated(req: Request, res: Response, next
 
   const refreshTokenCoded = req.cookies['refresh-token'];
 
+  console.log(refreshTokenCoded);
   if (!refreshTokenCoded) return res.status(StatusCode.NOT_AUTHORIZED);
 
   const decodedRefreshToken = Buffer.from(refreshTokenCoded, 'base64').toString('binary');
-
+  console.log(decodedRefreshToken);
   const refreshToken = await tokenService.getRefreshToken(decodedRefreshToken);
 
-  if (!refreshToken) return res.status(StatusCode.NOT_AUTHORIZED);
+  console.log(refreshToken);
+  if (!refreshToken) return res.status(StatusCode.NOT_AUTHORIZED).json({ error: 'Token invalid' });
 
-  const expired = new Date(dayjs(refreshToken.expiresIn).get('date'));
-  const now = new Date();
+  const expired = refreshToken.expiresIn;
+  const now = dayjs(new Date()).unix();
+
   if (expired < now) {
-    await tokenService.deleteRefreshToken(refreshToken.id);
-    return res.status(StatusCode.NOT_AUTHORIZED);
+    return res.status(StatusCode.NOT_AUTHORIZED).json({ error: 'Token expired' });
   }
+  console.log('passou');
   next();
 }
 
@@ -39,8 +42,10 @@ export function withAccessAuthenticated(req: Request, res: Response, next: NextF
     const { sub, admin } = jwt.verify(token, process.env.JWT_SECRET_KEY, {
       audience: 'urn:jwt:type:access',
     }) as AccessTokenPayload;
-    req.auth.user_id = sub;
-    req.auth.admin = admin;
+
+    req.user_id = sub;
+    req.admin = admin;
+
     next();
   } catch (err) {
     return res.status(StatusCode.NOT_AUTHORIZED).json({ error: err.message });
