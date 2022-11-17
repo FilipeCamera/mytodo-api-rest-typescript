@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import 'reflect-metadata';
 import 'dotenv/config';
 import express, { Application } from 'express';
@@ -5,6 +6,7 @@ import routes from './routes';
 import MyToDoDataSource from './database';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import HandleErrors from './middlewares/error.middlewares';
 
 class App {
   private readonly app: Application;
@@ -14,6 +16,7 @@ class App {
     this.loadDatabase();
     this.middlewares();
     this.app.use(routes);
+    this.errorsMiddlewares();
   }
 
   private async loadDatabase() {
@@ -28,6 +31,10 @@ class App {
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(cors());
+  }
+
+  private errorsMiddlewares() {
+    this.app.use(HandleErrors);
   }
 
   listen(port: number) {

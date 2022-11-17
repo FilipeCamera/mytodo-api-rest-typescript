@@ -5,6 +5,7 @@ import brcypt from 'bcrypt';
 import UserService from '../services/user.service';
 import TokenService from '../services/token.service';
 import refreshCookies from '../utils/refresh-cookie';
+import { BadRequest, NotFound } from '../helpers/errors';
 
 class AuthController {
   constructor(
@@ -16,7 +17,9 @@ class AuthController {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(StatusCode.BAD_REQUEST).json({ errors: errors.array() });
+      errors.array().map((error) => {
+        throw new BadRequest(error.msg);
+      });
     }
 
     const { email, password } = req.body;
@@ -24,22 +27,18 @@ class AuthController {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
-      return res.status(StatusCode.NOT_FOUND).json({ message: 'E-mail or password incorrect' });
+      throw new NotFound('User not found');
     }
 
     const passwordValidate = await brcypt.compare(password, user.password);
 
     if (!passwordValidate) {
-      return res.status(StatusCode.BAD_REQUEST).json({ message: 'E-mail or password incorrect' });
+      throw new BadRequest('E-mail or password incorrect');
     }
 
-    try {
-      const { accessToken, refreshToken } = await this.tokenService.generate(user);
-      refreshCookies(res, refreshToken);
-      return res.status(StatusCode.OK).json({ token: accessToken });
-    } catch (err) {
-      res.status(StatusCode.SERVER_ERROR).json({ error: err.message });
-    }
+    const { accessToken, refreshToken } = await this.tokenService.generate(user);
+    refreshCookies(res, refreshToken);
+    return res.status(StatusCode.OK).json({ token: accessToken });
   }
 
   async refresh(req: Request, res: Response) {

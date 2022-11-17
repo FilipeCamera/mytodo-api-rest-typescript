@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { StatusCode } from '../enums/status-code';
 import { validationResult } from 'express-validator';
 import User from '../models/user';
-//import MyToDoDataSource from '../database';
 import UserService from '../services/user.service';
 import RoleService from '../services/role.service';
+import { BadRequest, NotAuthorized, NotFound, ServerError } from '../helpers/errors';
 
 class UserController {
   constructor(
@@ -16,7 +16,7 @@ class UserController {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(StatusCode.BAD_REQUEST).json({ errors: errors.array() });
+      throw new BadRequest('incomplete or blank fields');
     }
 
     const { email, password } = req.body;
@@ -24,23 +24,19 @@ class UserController {
     const existUser = await this.userService.findByEmail(email);
 
     if (existUser) {
-      return res.status(StatusCode.BAD_REQUEST).json({ message: 'User exist' });
+      throw new BadRequest('User exist');
     }
 
     const role = await this.roleService.findByName('USER');
 
     if (!role) {
-      return res
-        .status(StatusCode.SERVER_ERROR)
-        .json('Ocorreu um erro! Tente novamente mais tarde.');
+      throw new ServerError('Ocorreu um erro! Tente novamente mais tarde.');
     }
 
     const user = this.userService.create(email, password, role);
 
     if (!user) {
-      return res
-        .status(StatusCode.SERVER_ERROR)
-        .json({ error: 'Tivemos um problema ao criar o usuário' });
+      throw new ServerError('Tivemos um problema ao criar o usuário');
     }
 
     await this.userService.save(user);
@@ -55,7 +51,6 @@ class UserController {
 
     if (!user) {
       const users: User[] = await this.userService.findAll();
-      //user = await MyToDoDataSource.getRepository(User).find();
 
       return res.status(StatusCode.OK).json({ users: users });
     }
@@ -69,19 +64,17 @@ class UserController {
     const { user_id, admin } = req;
 
     if (!user_id) {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
+      throw new NotAuthorized('Unauthenticated user');
     }
 
     const userUpdate = await this.userService.findById(id);
 
     if (!userUpdate) {
-      return res.status(StatusCode.BAD_REQUEST).json('User not found');
+      throw new NotFound('User not found');
     }
 
     if (userUpdate.id !== user_id || admin) {
-      return res
-        .status(StatusCode.NOT_AUTHORIZED)
-        .json({ message: 'You do not have permission to modify this user' });
+      throw new NotAuthorized('You do not have permission to modify this user');
     }
 
     userUpdate.email = email;
@@ -97,17 +90,17 @@ class UserController {
     const { user_id, admin } = req;
 
     if (!user_id) {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'Unauthenticated user' });
+      throw new NotAuthorized('Unauthenticated user');
     }
 
     const user = await this.userService.findById(id);
 
     if (!user) {
-      return res.status(StatusCode.NOT_FOUND).json({ message: 'User not found' });
+      throw new NotFound('User not found');
     }
 
     if (user.id !== user_id || admin) {
-      return res.status(StatusCode.NOT_AUTHORIZED).json({ message: 'You cannot delete this user' });
+      throw new NotAuthorized('You cannot delete this user');
     }
 
     await this.userService.remove(user);
