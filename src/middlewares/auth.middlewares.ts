@@ -15,21 +15,20 @@ export async function withRefreshAuthenticated(req: Request, res: Response, next
 
   const refreshTokenCoded = req.cookies['refresh-token'];
 
-  if (!refreshTokenCoded) throw new NotAuthorized('Token not exist');
+  if (!refreshTokenCoded) throw new NotAuthorized('Refresh Token not exist');
 
   const decodedRefreshToken = Buffer.from(refreshTokenCoded, 'base64').toString('binary');
-  console.log(decodedRefreshToken);
+  console.log('refresh-token' + decodedRefreshToken);
   const refreshToken = await tokenService.getRefreshToken(decodedRefreshToken);
 
-  if (!refreshToken) throw new NotAuthorized('Token invalid');
+  if (!refreshToken) throw new NotAuthorized('Refresh Token invalid');
 
   const expired = refreshToken.expiresIn;
   const now = dayjs(new Date()).unix();
 
   if (expired < now) {
-    throw new NotAuthorized('Token expired');
+    throw new NotAuthorized('Refresh Token expired');
   }
-  console.log('passou');
   next();
 }
 
@@ -37,6 +36,7 @@ export function withAccessAuthenticated(req: Request, res: Response, next: NextF
   const base_token = req.headers['authorization'];
 
   if (!base_token) throw new NotAuthorized('Token invalid');
+
   const [, token] = base_token.split(' ');
 
   const { sub, admin } = jwt.verify(token, process.env.JWT_SECRET_KEY, {

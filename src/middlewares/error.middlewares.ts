@@ -7,7 +7,15 @@ export default function HandleErrors(
   res: Response,
   next: NextFunction
 ) {
-  const statusCode = err.statusCode ?? 500;
-  const message = err.statusCode ? err.message : 'Internal Server Error';
+  const statusCode = err.statusCode
+    ? err.statusCode
+    : err.name === 'TokenExpiredError'
+    ? 401
+    : 500;
+  const message = err.statusCode
+    ? err.message
+    : err.name === 'TokenExpiredError'
+    ? 'Token Expired'
+    : 'Internal Server Error';
   res.status(statusCode).json({ msg: message });
 }

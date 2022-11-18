@@ -4,7 +4,12 @@ import { validationResult } from 'express-validator';
 import User from '../models/user';
 import UserService from '../services/user.service';
 import RoleService from '../services/role.service';
-import { BadRequest, NotAuthorized, NotFound, ServerError } from '../helpers/errors';
+import {
+  BadRequest,
+  NotAuthorized,
+  NotFound,
+  ServerError,
+} from '../helpers/errors';
 
 class UserController {
   constructor(
@@ -47,15 +52,18 @@ class UserController {
   async read(req: Request, res: Response) {
     const { id } = req.params;
 
-    const user: User = await this.userService.findById(id);
+    if (id) {
+      const user: User = await this.userService.findById(id);
+      if (!user) throw new NotFound('Users not found');
 
-    if (!user) {
-      const users: User[] = await this.userService.findAll();
-
-      return res.status(StatusCode.OK).json({ users: users });
+      return res.status(StatusCode.OK).json({ user: user });
     }
 
-    return res.status(StatusCode.OK).json({ user: user });
+    const users: User[] = await this.userService.findAll();
+
+    if (!users) throw new NotFound('Users not found');
+
+    return res.status(StatusCode.OK).json({ users: users });
   }
 
   async update(req: Request, res: Response) {

@@ -7,10 +7,8 @@ import dayjs from 'dayjs';
 
 export default class TokenService {
   private readonly tokenRefreshRepository: Repository<RefreshToken>;
-  private readonly userRepository: Repository<User>;
   constructor() {
     this.tokenRefreshRepository = MyToDoDataSource.getRepository(RefreshToken);
-    this.userRepository = MyToDoDataSource.getRepository(User);
   }
 
   async generate(user: User): Promise<Record<string, string>> {
@@ -20,7 +18,7 @@ export default class TokenService {
       {
         audience: 'urn:jwt:type:access',
         issuer: 'urn:system:token-issuer:type:access',
-        expiresIn: '1m',
+        expiresIn: '5m',
       }
     );
     const existRefreshToken = await this.tokenRefreshRepository.findOne({
@@ -30,7 +28,7 @@ export default class TokenService {
     if (existRefreshToken) {
       await this.tokenRefreshRepository.remove(existRefreshToken);
     }
-    const expiresIn = dayjs().add(5, 'minutes').unix();
+    const expiresIn = dayjs().add(15, 'minutes').unix();
     const refreshToken = this.tokenRefreshRepository.create({
       user: user,
       expiresIn: expiresIn,

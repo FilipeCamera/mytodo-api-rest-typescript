@@ -36,7 +36,9 @@ class AuthController {
       throw new BadRequest('E-mail or password incorrect');
     }
 
-    const { accessToken, refreshToken } = await this.tokenService.generate(user);
+    const { accessToken, refreshToken } = await this.tokenService.generate(
+      user
+    );
     refreshCookies(res, refreshToken);
     return res.status(StatusCode.OK).json({ token: accessToken });
   }
@@ -45,7 +47,9 @@ class AuthController {
     const ref = req.cookies['refresh-token'];
     const refreshTokenDecoded = Buffer.from(ref, 'base64').toString('binary');
 
-    const { accessToken, refreshToken } = await this.tokenService.refresh(refreshTokenDecoded);
+    const { accessToken, refreshToken } = await this.tokenService.refresh(
+      refreshTokenDecoded
+    );
 
     refreshCookies(res, refreshToken);
 
