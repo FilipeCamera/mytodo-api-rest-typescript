@@ -1,14 +1,15 @@
-import { Repository } from 'typeorm';
-import MyToDoDataSource from '../database';
-import RefreshToken from '../models/refresh-token';
+import { RefreshToken } from '../models';
 import User from '../models/user';
 import jwt from 'jsonwebtoken';
 import dayjs from 'dayjs';
+import { RefreshTokenRepository } from '../repositories';
+import { ServerError } from '../helpers/errors';
 
 export default class TokenService {
-  private readonly tokenRefreshRepository: Repository<RefreshToken>;
+  private readonly tokenRefreshRepository: RefreshTokenRepository;
+
   constructor() {
-    this.tokenRefreshRepository = MyToDoDataSource.getRepository(RefreshToken);
+    this.tokenRefreshRepository = new RefreshTokenRepository();
   }
 
   async generate(user: User): Promise<Record<string, string>> {
@@ -21,6 +22,7 @@ export default class TokenService {
         expiresIn: '5m',
       }
     );
+
     const existRefreshToken = await this.tokenRefreshRepository.findOne({
       where: { user: { id: user.id } },
     });
@@ -35,7 +37,7 @@ export default class TokenService {
     });
 
     if (!refreshToken) {
-      throw new Error('Could not create refresh token');
+      throw new ServerError('Could not create refresh token');
     }
 
     await this.tokenRefreshRepository.save(refreshToken);

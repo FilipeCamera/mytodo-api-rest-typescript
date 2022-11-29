@@ -3,8 +3,7 @@ import { body } from 'express-validator';
 import UserController from '../controllers/user.controller';
 import { withAccessAuthenticated } from '../middlewares/auth.middlewares';
 
-import RoleService from '../services/role.service';
-import UserService from '../services/user.service';
+import { UserService, RoleService } from '../services';
 
 const userRoutes = express.Router();
 
@@ -20,8 +19,12 @@ userRoutes.post(
   (req, res) => userController.create(req, res)
 );
 
-userRoutes.get('/users', withAccessAuthenticated, (req, res) => userController.read(req, res));
-userRoutes.get('/users/:id', withAccessAuthenticated, (req, res) => userController.read(req, res));
+userRoutes.get('/users', withAccessAuthenticated, (req, res) =>
+  userController.read(req, res)
+);
+userRoutes.get('/users/:id', withAccessAuthenticated, (req, res) =>
+  userController.read(req, res)
+);
 userRoutes.put('/users/:id', withAccessAuthenticated, (req, res) =>
   userController.update(req, res)
 );

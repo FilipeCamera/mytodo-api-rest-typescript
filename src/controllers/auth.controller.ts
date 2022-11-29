@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCode } from '../enums/status-code';
 import brcypt from 'bcrypt';
-import UserService from '../services/user.service';
-import TokenService from '../services/token.service';
+import { UserService, TokenService } from '../services';
 import refreshCookies from '../utils/refresh-cookie';
 import { BadRequest, NotFound } from '../helpers/errors';
 
@@ -39,6 +38,7 @@ class AuthController {
     const { accessToken, refreshToken } = await this.tokenService.generate(
       user
     );
+
     refreshCookies(res, refreshToken);
     return res.status(StatusCode.OK).json({ token: accessToken });
   }

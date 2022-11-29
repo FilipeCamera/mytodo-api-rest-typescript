@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCode } from '../enums/status-code';
 import { validationResult } from 'express-validator';
 import User from '../models/user';
-import UserService from '../services/user.service';
-import RoleService from '../services/role.service';
+import { UserService, RoleService } from '../services';
 import {
   BadRequest,
   NotAuthorized,

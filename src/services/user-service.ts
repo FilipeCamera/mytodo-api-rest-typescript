@@ -1,12 +1,10 @@
-import { Repository } from 'typeorm';
-import MyToDoDataSource from '../database';
-import Role from '../models/role';
-import User from '../models/user';
+import { User, Role } from '../models';
+import { UserRepository } from '../repositories';
 
 export default class UserService {
-  private readonly userRepository: Repository<User>;
+  private readonly userRepository: UserRepository;
   constructor() {
-    this.userRepository = MyToDoDataSource.getRepository(User);
+    this.userRepository = new UserRepository();
   }
 
   async existUser(email: string): Promise<boolean> {

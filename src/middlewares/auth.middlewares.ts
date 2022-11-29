@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import jwt from 'jsonwebtoken';
-import TokenService from '../services/token.service';
+import { TokenService } from '../services';
 import dayjs from 'dayjs';
 import { NotAuthorized } from '../helpers/errors';
 
@@ -10,14 +10,20 @@ interface AccessTokenPayload {
   admin: boolean;
 }
 
-export async function withRefreshAuthenticated(req: Request, res: Response, next: NextFunction) {
+export async function withRefreshAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const tokenService = new TokenService();
 
   const refreshTokenCoded = req.cookies['refresh-token'];
 
   if (!refreshTokenCoded) throw new NotAuthorized('Refresh Token not exist');
 
-  const decodedRefreshToken = Buffer.from(refreshTokenCoded, 'base64').toString('binary');
+  const decodedRefreshToken = Buffer.from(refreshTokenCoded, 'base64').toString(
+    'binary'
+  );
   console.log('refresh-token' + decodedRefreshToken);
   const refreshToken = await tokenService.getRefreshToken(decodedRefreshToken);
 
@@ -32,7 +38,11 @@ export async function withRefreshAuthenticated(req: Request, res: Response, next
   next();
 }
 
-export function withAccessAuthenticated(req: Request, res: Response, next: NextFunction) {
+export function withAccessAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const base_token = req.headers['authorization'];
 
   if (!base_token) throw new NotAuthorized('Token invalid');

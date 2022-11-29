@@ -1,11 +1,10 @@
-import { Repository } from 'typeorm';
-import MyToDoDataSource from '../database';
 import Role from '../models/role';
+import { RoleRepository } from '../repositories';
 
 export default class RoleService {
-  private readonly roleRepository: Repository<Role>;
+  private readonly roleRepository: RoleRepository;
   constructor() {
-    this.roleRepository = MyToDoDataSource.getRepository(Role);
+    this.roleRepository = new RoleRepository();
   }
 
   async findByName(name: string): Promise<Role> {
