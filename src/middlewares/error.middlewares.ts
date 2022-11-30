@@ -17,5 +17,5 @@ export default function HandleErrors(
     : err.name === 'TokenExpiredError'
     ? 'Token Expired'
     : 'Internal Server Error';
-  res.status(statusCode).json({ msg: message });
+  res.status(statusCode).json({ error: message });
 }

@@ -31,11 +31,11 @@ export default class UserService {
   }
 
   async findById(id: string): Promise<User> {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOneByID(id);
   }
 
-  async findAll(): Promise<Array<User>> {
-    return await this.userRepository.find();
+  async findUsers(): Promise<Array<User>> {
+    return await this.userRepository.findAll();
   }
 
   async remove(user: User): Promise<boolean> {

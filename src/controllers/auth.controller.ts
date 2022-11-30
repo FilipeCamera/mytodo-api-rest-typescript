@@ -26,7 +26,7 @@ class AuthController {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
-      throw new NotFound('User not found');
+      throw new NotFound('E-mail or password incorrect');
     }
 
     const passwordValidate = await brcypt.compare(password, user.password);

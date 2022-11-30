@@ -58,7 +58,7 @@ class UserController {
       return res.status(StatusCode.OK).json({ user: user });
     }
 
-    const users: User[] = await this.userService.findAll();
+    const users: User[] = await this.userService.findUsers();
 
     if (!users) throw new NotFound('Users not found');
 
