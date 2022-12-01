@@ -20,4 +20,17 @@ export default class UserRepository extends Repository<User> {
       where: { id },
     });
   }
+
+  async findOneByIDSelectAll(id: string): Promise<User> {
+    return await this.findOne({
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      where: { id },
+    });
+  }
 }

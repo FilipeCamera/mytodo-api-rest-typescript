@@ -1,7 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
-import AuthController from '../controllers/auth.controller';
-import { withRefreshAuthenticated } from '../middlewares/auth.middlewares';
+import AuthController from '../controllers/auth-controller';
+import { withRefreshAuthenticated } from '../middlewares/auth-middlewares';
 import { UserService, TokenService } from '../services';
 const authRoutes = express.Router();
 

@@ -6,7 +6,7 @@ import routes from './routes';
 import MyToDoDataSource from './database';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import HandleErrors from './middlewares/error.middlewares';
+import HandleErrors from './middlewares/error-middlewares';
 
 class App {
   private readonly app: Application;

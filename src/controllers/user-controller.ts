@@ -67,14 +67,13 @@ class UserController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { email, password } = req.body;
     const { user_id, admin } = req;
 
     if (!user_id) {
       throw new NotAuthorized('Unauthenticated user');
     }
 
-    const userUpdate = await this.userService.findById(id);
+    const userUpdate = await this.userService.findByIdSelectAll(id);
 
     if (!userUpdate) {
       throw new NotFound('User not found');
@@ -84,8 +83,11 @@ class UserController {
       throw new NotAuthorized('You do not have permission to modify this user');
     }
 
-    userUpdate.email = email;
-    userUpdate.password = password;
+    for (const value in req.body) {
+      console.log('valor:', value);
+      console.log('valor user:', userUpdate[value]);
+      userUpdate[value] = req.body[value];
+    }
 
     await this.userService.save(userUpdate);
 

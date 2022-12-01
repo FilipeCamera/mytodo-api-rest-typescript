@@ -34,6 +34,10 @@ export default class UserService {
     return await this.userRepository.findOneByID(id);
   }
 
+  async findByIdSelectAll(id: string): Promise<User> {
+    return await this.userRepository.findOneByIDSelectAll(id);
+  }
+
   async findUsers(): Promise<Array<User>> {
     return await this.userRepository.findAll();
   }

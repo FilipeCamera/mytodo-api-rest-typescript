@@ -1,7 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
-import UserController from '../controllers/user.controller';
-import { withAccessAuthenticated } from '../middlewares/auth.middlewares';
+import UserController from '../controllers/user-controller';
+import { withAccessAuthenticated } from '../middlewares/auth-middlewares';
 
 import { UserService, RoleService } from '../services';
 
@@ -28,6 +28,11 @@ userRoutes.get('/users/:id', withAccessAuthenticated, (req, res) =>
 userRoutes.put('/users/:id', withAccessAuthenticated, (req, res) =>
   userController.update(req, res)
 );
+
+userRoutes.patch('/users/:id', withAccessAuthenticated, (req, res) =>
+  userController.update(req, res)
+);
+
 userRoutes.delete('/users/:id', withAccessAuthenticated, (req, res) =>
   userController.delete(req, res)
 );
